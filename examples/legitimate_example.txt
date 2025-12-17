@@ -1,0 +1,16 @@
+From: noreply@github.com
+To: user@example.com
+Subject: [GitHub] Your pull request was merged
+
+Hi @username,
+
+Your pull request "Fix typo in documentation" was merged into main.
+
+View pull request: https://github.com/owner/repo/pull/123
+
+You can view the changes at:
+https://github.com/owner/repo/commit/abc123def456
+
+Thanks for your contribution!
+
+GitHub
