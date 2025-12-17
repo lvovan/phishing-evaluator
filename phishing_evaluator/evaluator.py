@@ -117,6 +117,8 @@ class PhishingEvaluator:
             )
 
             result = response.choices[0].message.content
+            if result is None:
+                raise RuntimeError("API returned empty response (content filtering may have been triggered)")
             return self._parse_response(result)
 
         except Exception as e:
@@ -145,22 +147,35 @@ class PhishingEvaluator:
 
         for line in lines:
             line = line.strip()
+            if not line:
+                continue
+                
             if line.startswith("SCORE:"):
-                result["score"] = line.replace("SCORE:", "").strip()
+                content = line.replace("SCORE:", "").strip()
+                if content:
+                    result["score"] = content
                 current_section = "score"
             elif line.startswith("RISK LEVEL:"):
-                result["risk_level"] = line.replace("RISK LEVEL:", "").strip()
+                content = line.replace("RISK LEVEL:", "").strip()
+                if content:
+                    result["risk_level"] = content
                 current_section = "risk_level"
             elif line.startswith("REASONING:"):
-                result["reasoning"] = line.replace("REASONING:", "").strip()
+                content = line.replace("REASONING:", "").strip()
+                if content:
+                    result["reasoning"] = content
                 current_section = "reasoning"
             elif line.startswith("RED FLAGS:"):
-                result["red_flags"] = line.replace("RED FLAGS:", "").strip()
+                content = line.replace("RED FLAGS:", "").strip()
+                if content:
+                    result["red_flags"] = content
                 current_section = "red_flags"
             elif line.startswith("RECOMMENDATION:"):
-                result["recommendation"] = line.replace("RECOMMENDATION:", "").strip()
+                content = line.replace("RECOMMENDATION:", "").strip()
+                if content:
+                    result["recommendation"] = content
                 current_section = "recommendation"
-            elif line and current_section:
+            elif current_section:
                 # Continue multi-line sections
                 if result[current_section]:
                     result[current_section] += " " + line
